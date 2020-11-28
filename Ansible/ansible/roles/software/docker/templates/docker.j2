@@ -3,8 +3,3 @@
 # {{ ansible_default_ipv4.address }}
 # {{ ansible_eth1.ipv4.address }}
 
-{% if ansible_eth1.ipv4.address == '10.0.0.12' %}
-echo "{{ crond__content }}"
-{% else %}
-echo "blabla"
-{% endif %}

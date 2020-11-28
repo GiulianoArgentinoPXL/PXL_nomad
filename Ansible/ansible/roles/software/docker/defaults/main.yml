@@ -1,4 +1,5 @@
 ---
+
 # docker_edition kan oftewel 'ce' (community edition of 'ee' (enterprise edition) zijn
 docker_edition: 'ce'
 # gebruikt de var hierboven om de juiste package-naam vast te krijgen

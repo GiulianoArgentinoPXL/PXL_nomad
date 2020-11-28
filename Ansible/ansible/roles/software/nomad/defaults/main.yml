@@ -8,7 +8,11 @@ nomad_bind_addr_client: 0.0.0.0
 nomad_bind_addr_server: 10.0.0.10
 
 #nomad client
-nomad_client: \{\nenabled = true  \nservers = ["{{nomad_bind_addr_server}}"]}
-
+nomad_client: 
+    enabled: true
+    servers: ["{{nomad_bind_addr_server}}"]
+    
 #nomad server
-nomad_server: \{\nenabled = true  \nbootstrap_expect = "{{nomad_bootstrap_expect}}"\n}
+nomad_server:
+    enabled: true
+    bootstrap_expect: "{{nomad_bootstrap_expect}}"

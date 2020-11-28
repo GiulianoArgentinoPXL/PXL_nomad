@@ -37,6 +37,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
        ansible.playbook = "ansible/plays/playbook.yml"
        ansible.groups = {
          "clients" => ["AGENT1","AGENT2"]
+		 "clients:vars" => {"consul_server" => true, "nomad_server" => false, "nomad_client" => true }
        }
        ansible.verbose = '-vvv'
 	   end   

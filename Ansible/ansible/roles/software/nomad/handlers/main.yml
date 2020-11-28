@@ -1,4 +1,5 @@
 ---
+
 - name: restart nomad
   service: 
     name:nomad 

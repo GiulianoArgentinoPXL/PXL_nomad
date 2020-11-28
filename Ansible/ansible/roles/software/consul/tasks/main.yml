@@ -1,4 +1,5 @@
 ---
+
 - name: Make sure epel is installed
   yum:
     name: epel-release
