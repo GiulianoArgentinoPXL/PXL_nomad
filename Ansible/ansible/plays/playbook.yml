@@ -1,17 +1,16 @@
----
-
-- name: playbook voor server vm dependancies te installeren
+--- 
+- become: true
   hosts: servers
-  become: yes
-  roles:
-    - software/consul
-    - software/nomad
+  name: "playbook for server vm"
+  roles: 
+    - role: software/consul
+    - role: software/nomad
 
-- name: playbook voor client vm dependancies te installeren
+- become: true
   hosts: clients
-  become: yes
-  roles:
-    - software/consul
-    - software/nomad    
-    - software/docker
+  name: "playbook for client vm"
+  roles: 
+    - role: software/docker
+    - role: software/consul
+    - role: software/nomad
 

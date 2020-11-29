@@ -1,14 +1,5 @@
 ---
 
-- name: Docker oude versies verwijderen
-  package:
-    name: "{{ item }}"
-    state: absent
-  with_items:
-    - docker-engine
-    - docker
-    - docker-common
-    - docker.io
 
 - name:  Docker GPG key toevoegen.
   rpm_key:

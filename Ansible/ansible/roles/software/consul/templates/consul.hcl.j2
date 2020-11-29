@@ -9,6 +9,14 @@ data_dir = "{{consul_data_path}}"
 client_address = "{{consul_client_addr}}"
 ui = "{{consul_ui}}"
 bind_addr = "{{consul_bind_addr}}"
-server = "{{consul_server}}"
+
+{% if consul__server == "true" %}
+
 bootstrap_expect = "{{ consul_bootstrap_expect }}"
-retry_join = ["10.0.0.10","10.0.0.11","10.0.0.12"]
+server = "{{consul_server}}"
+
+{%else %}
+# client
+retry_join = ["{{ consul_server_addr }}"]
+
+{% endif %}
