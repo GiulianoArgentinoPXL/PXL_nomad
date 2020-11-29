@@ -36,53 +36,36 @@ After the vagrant environment is set up successfully, type
 
 **How was this developed?**
 
-We made use of multiple sources to expand our knowledge of Vagrant multi-machine uses which can all be found at the bottom of the *README.md*
+First of all we define our nodes with both a loop and manually. The server is hardcoded because theres only 1 and it needs a different name compared to the multiple agents.
+You can add as many agents as you want by just increasing the `NODE_COUNT` variable at the top of the **Vagrantfile**.
 
-Variables were used like we were taught in class to keep the file as clear as possible.
-
-Next up we made use of shell scripts to install *Docker*, *Nomad* and *Consul* onto every machine that was being set up using *systemd* with the foreseen yum repository from *HashiCorp*. Together with this we check for updates for the operating system to keep the machine up to date.
-
-We chose to configure the *Consul* and *Nomad* server first so that the agents which will be created later can immediately join as members.
-
-Now you could ask, why did we mix both inline and external scripts? 
-
-The answer is simple, just as simple as we tried to make the Vagrantfile as clear and simple as possible. We wanted to test our skills and see if we could use both without causing issues in the script. It's also easier to see the difference in configuration (of Nomad and Consul) between the agents and the server so that you don't have to open the external scripts for all machines and spotting the differences.
-
-The agents have been defined so that double code has been prevented. With a nice and easy to use ".each" loop we define 2 nodes with a corresponding hostname and IP-address. Luckily the required configuration wasn't as complex as we thought and therefore we were able to use the same inline script for both nodes.
-
-*Nomad* and *Consul* will restart after the configuration has been completed and your machines will be ready to use.
-
-**How do I test if it actually works?**
-
-To test if the Vagrantfile is working as intended, simply type the following command on the Nomad server:
-
-```
-    nomad job init webserver
+```vagrant
+NODE_COUNT = 2
+config.vm.define "nomadserver" do |server|
+    ...
+end
+(1..NODE_COUNT).each do |i|
+     config.vm.define "agent#{i}" do |agent|
+       ..
+     end
+end
 ```
 
-This will create an example job file, which you can replace with the provided 'webserver_job.txt' file which has been provided in this repository. Simply copy and paste the content in the example file and run the following command:
+Once the nodes have been defined, we can continue by using the Ansible provisioner. Here we indicate our **ansible.cfg** file with the correct path, and the same goes for our **playbook.yml**. Up next is setting the correct groups for the servers/clients, aswell as passing on variables towards a group which will be explained later on.
 
-```
-    nomad job run -address=http://10.0.0.10:4646 webserver
-```
-
-If the output says the job has been started correctly on the agents, you will know its working as intended.
-
-
-**How do I check if all nodes are *Consul* and *Nomad* members?**
-
-Simply type:
-
-```
-    consul members
+```vagrant
+config.vm.provision "ansible" do |ansible|
+     ansible.config_file = "ansible/ansible.cfg"
+     ansible.playbook = "ansible/plays/playbook.yml"
+     ansible.groups = {
+       "servers" => ["server"],
+       "clients" => ["agent1","agent2"],
+       "servers:vars" => {"consul_server" => true, "nomad__server" => true}
+     }
+     ansible.verbose = '-vvv' 
+  end
 ```
 
-```
-    nomad node status -address=http://10.0.0.10:4646
-```
 
-https://www.consul.io/docs/agent/options.html
-
-https://manski.net/2016/09/vagrant-multi-machine-tutorial/#starting-and-interacting-with-your-first-vm
 
 https://learn.hashicorp.com/tutorials/consul/get-started-create-datacenter?in=consul%2Fgetting-started&fbclid=IwAR1lVFYM9e_ELX9v-aOq18Cet9bAxYZuKBYCOkCZHNP3F35l5h-NJgyyIGg
