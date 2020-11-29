@@ -4,10 +4,9 @@
 # {{ ansible_eth1.ipv4.address }}
 log_level = "DEBUG"
 data_dir = "{{ nomad_data_dir }}"
-bind_addr = "{{ nomad_bind_addr }}"
 
 server {
-	enabled = "{{ server_enabled }}"
+	enabled = true
 	bootstrap_expect = "{{ nomad_bootstrap_expect }}"
 }
 

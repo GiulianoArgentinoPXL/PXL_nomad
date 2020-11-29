@@ -15,7 +15,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     override.vm.box = "visibilityspots/centos-7.x-minimal"
   end
 
-  config.vm.define "nomadserver" do |server|
+  config.vm.define "server" do |server|
     server.vm.hostname = "server"
     config.vm.network :private_network, ip: "10.0.0.10", virtualbox__intnet: true
   end
@@ -32,7 +32,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
      ansible.groups = {
        "servers" => ["server"],
        "clients" => ["agent1","agent2"],
-       "servers:vars" => {"consul_server" => true, "nomad__server" => true}
+       "clients:vars" => {"consul_server" => false, "nomad_server" => false, "nomad_client" => true},
+       "servers:vars" => {"consul_server" => true, "nomad_server" => true, "nomad_client" => false}
      }
      ansible.verbose = '-vvv' 
   end

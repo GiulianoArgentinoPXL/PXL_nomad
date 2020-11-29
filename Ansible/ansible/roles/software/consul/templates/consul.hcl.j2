@@ -3,20 +3,18 @@
 # {{ ansible_default_ipv4.address }}
 # {{ ansible_eth1.ipv4.address }}
 
-  
+
 datacenter = "{{consul_datacenter}}"
-data_dir = "{{consul_data_path}}"
-client_address = "{{consul_client_addr}}"
-ui = "{{consul_ui}}"
-bind_addr = "{{consul_bind_addr}}"
+data_dir = "{{ consul_data_dir }}"
+client_addr = "0.0.0.0"
+ui = true
 
-{% if "{{ consul_bind_addr }}" == "{{ consul_server_addr }}" %}
+bind_addr = "{{ ansible_eth1.ipv4.address }}" 
 
-bootstrap_expect = "{{ consul_bootstrap_expect }}"
-server = "{{consul_server}}"
+{% if consul_server == "true" %}
+bootstrap_expect = 1
+server = true
 
 {%else %}
-# client
 retry_join = ["{{ consul_server_addr }}"]
-
 {% endif %}
