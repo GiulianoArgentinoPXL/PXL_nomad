@@ -17,7 +17,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define "server" do |server|
     server.vm.hostname = "server"
-    config.vm.network :private_network, ip: "10.0.0.10", virtualbox__intnet: true
+    server.vm.network :private_network, ip: "10.0.0.10", virtualbox__intnet: true
   end
   
   (1..NODE_COUNT).each do |i|
