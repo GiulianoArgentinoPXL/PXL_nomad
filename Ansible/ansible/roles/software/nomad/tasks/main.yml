@@ -31,7 +31,7 @@
 
 - name: Create Nomad client configuration file
   template:
-    src: client_hcl.j2
+    src: client.hcl.j2
     dest: /etc/nomad.d/nomad.hcl
     owner: "nomad"
     group: "nomad"

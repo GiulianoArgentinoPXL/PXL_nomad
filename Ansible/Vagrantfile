@@ -14,33 +14,23 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   config.vm.define "nomadserver" do |server|
-    server.vm.hostname = "server"
-    server.vm.network :private_network, ip: "10.0.0.10", virtualbox__intnet: true, auto_config: true
-	server.vm.provision "ansible" do |ansible|
-      ansible.config_file = "ansible/ansible.cfg"
-      ansible.playbook = "ansible/plays/playbook.yml"
-      ansible.groups = {
-        "servers" => ["server"]
-      }
-      ansible.verbose = '-vvv'
-    end
-	#nomadserver.vm.provision "file", source: "webserver.hcl", destination: "~/webserver.hcl"
-	end
+    server.vm.hostname = "SERVER"
+  end
   
-  (1..NODE_COUNT).each do |i|
+  (0..NODE_COUNT).each do |i|
      config.vm.define "agent#{i}" do |subconfig|
-       subconfig.vm.box = BOX_IMAGE
        subconfig.vm.hostname = "AGENT#{i}"
        subconfig.vm.network :private_network, ip: "10.0.0.#{i + 10}", virtualbox__intnet: true, auto_config: true
-	   subconfig.vm.provision "ansible" do |ansible|
+       subconfig.vm.provision "ansible" do |ansible|
        ansible.config_file = "ansible/ansible.cfg"
        ansible.playbook = "ansible/plays/playbook.yml"
        ansible.groups = {
-         "clients" => ["AGENT1","AGENT2"]
-		 "clients:vars" => {"consul_server" => true, "nomad_server" => false, "nomad_client" => true }
+         "servers" => ["SERVER"],
+         "clients" => ["SERVER","AGENT1","AGENT2"],
+         "clients:vars" => {"consul_server" => true, "nomad_server" => false, "nomad_client" => false}
        }
        ansible.verbose = '-vvv'
-	   end   
-	 end
-   end 
+     end
+  end 
+ end
 end

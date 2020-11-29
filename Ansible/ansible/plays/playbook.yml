@@ -1,10 +1,17 @@
 ---
 
-- name: playbook voor consul, docker en nomad te installeren
-  hosts: all
+- name: playbook voor server vm dependancies te installeren
+  hosts: servers
   become: yes
   roles:
-    - role: software/consul
-    - role: software/docker
-    - role: software/nomad
+    - software/consul
+    - software/nomad
+
+- name: playbook voor client vm dependancies te installeren
+  hosts: clients
+  become: yes
+  roles:
+    - software/consul
+    - software/nomad    
+    - software/docker
 

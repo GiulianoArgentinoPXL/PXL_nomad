@@ -3,16 +3,9 @@
 
 ## Core
 nomad_bootstrap_expect: 1
+nomad_datacenter: "dc1"
 nomad_data_dir: /opt/nomad/data
-nomad_bind_addr_client: 0.0.0.0
-nomad_bind_addr_server: 10.0.0.10
+nomad_bind_addr: 10.0.0.10
+client_enabled: true
+server_enabled: true
 
-#nomad client
-nomad_client: 
-    enabled: true
-    servers: ["{{nomad_bind_addr_server}}"]
-    
-#nomad server
-nomad_server:
-    enabled: true
-    bootstrap_expect: "{{nomad_bootstrap_expect}}"

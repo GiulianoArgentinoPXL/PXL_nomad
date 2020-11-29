@@ -1,18 +1,35 @@
 ---
 
-- include_tasks: setup-RedHat.yml
-  when: ansible_os_family == 'RedHat'
+- name: Docker oude versies verwijderen
+  package:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - docker-engine
+    - docker
+    - docker-common
+    - docker.io
 
-- include_tasks: setup-Debian.yml
-  when: ansible_os_family == 'Debian'
+- name:  Docker GPG key toevoegen.
+  rpm_key:
+    key: "{{ docker_yum_gpg_key }}"
+    state: present
 
-- name: install docker
+- name: Docker repository toevoegen.
+  get_url:
+    url: "{{ docker_yum_repo_url }}"
+    dest: '/etc/yum.repos.d/docker-{{ docker_edition }}.repo'
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Docker installeren.
   package:
     name: "{{ docker_package }}"
     state: "{{ docker_package_state }}"
   notify: restart docker
 
-- name: docker on boot
+- name: Verificatie docker enabled en gestart.
   service:
     name: docker
     state: "{{ docker_service_state }}"
