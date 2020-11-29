@@ -54,7 +54,7 @@ end
 Once the nodes have been defined, we can continue by using the Ansible provisioner. Here we indicate our **ansible.cfg** file with the correct path, and the same goes for our **playbook.yml**. Up next is setting the correct groups for the servers/clients, aswell as passing on variables towards a group which will be explained later on.
 
 ```vagrant
-config.vm.provision "ansible" do |ansible|
+config.vm.provision "ansible_local" do |ansible|
      ansible.config_file = "ansible/ansible.cfg"
      ansible.playbook = "ansible/plays/playbook.yml"
      ansible.groups = {
