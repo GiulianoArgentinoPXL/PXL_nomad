@@ -7,5 +7,6 @@ consul_data_path: "/opt/consul"
 consul_client_addr: "0.0.0.0"
 consul_ui: true
 consul_bind_addr: "{{ ansible_eth1.ipv4.address }}"
+consul_server_addr: "10.0.0.10"
 consul_server: false
 consul_bootstrap_expect: 3

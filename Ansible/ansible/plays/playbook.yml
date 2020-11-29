@@ -1,14 +1,7 @@
---- 
+---
 - become: true
-  hosts: servers
-  name: "playbook for server vm"
-  roles: 
-    - role: software/consul
-    - role: software/nomad
-
-- become: true
-  hosts: clients
-  name: "playbook for client vm"
+  hosts: all
+  name: "playbook for vms"
   roles: 
     - role: software/docker
     - role: software/consul
