@@ -26,7 +26,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
        agent.vm.network :private_network, ip: "10.0.0.#{i + 10}", virtualbox__intnet: true
      end
   end
-  config.vm.provision "ansible" do |ansible|
+  config.vm.provision "ansible_local" do |ansible|
      ansible.config_file = "ansible/ansible.cfg"
      ansible.playbook = "ansible/plays/playbook.yml"
      ansible.groups = {
