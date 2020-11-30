@@ -62,7 +62,7 @@ The content for the playbook is really short, we seperate the clients from the s
 
 
 - become: true # become root
-  hosts: servers # all the nodes that are in the client group as defined in the Vagrantfile
+  hosts: servers # all the nodes that are in the server group as defined in the Vagrantfile
   name: "playbook for server vms" 
   roles: 
     - role: software/consul
