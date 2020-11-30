@@ -2,11 +2,11 @@
 
 **How was this developed?**
 
-- Vagrantfile
-- Ansible playbook
-- Roles
+- [Vagrantfile](https://github.com/GiulianoArgentinoPXL/PXL_nomad/blob/team19/Ansible/README.md#vagrantfile)
+- [Ansible playbook](https://github.com/GiulianoArgentinoPXL/PXL_nomad/blob/team19/Ansible/README.md#ansible-playbook)
+- [Roles](https://github.com/GiulianoArgentinoPXL/PXL_nomad/blob/team19/Ansible/README.md#roles)
 
-- EXTRA: Ansible lint
+- [EXTRA: Ansible lint](https://github.com/GiulianoArgentinoPXL/PXL_nomad/blob/team19/Ansible/README.md#extra-ansible-lint)
 
 # How was this developed?
 
@@ -110,14 +110,16 @@ If you take a look at the [Nomad task](https://github.com/GiulianoArgentinoPXL/P
  
  ## EXTRA: Ansible lint
 
-A fun little extra we used for this assignment since Ansible is a very interesting piece of software, we used [Ansible lint](https://ansible-lint.readthedocs.io/en/latest/usage.html) to test our **yaml** files for syntax errors, best practices, detecting behaviors that could be improved.
+A fun little extra we used for this assignment since Ansible is a very interesting piece of software, we used [Ansible lint](https://ansible-lint.readthedocs.io/en/latest/usage.html) to test our **yaml** files for syntax errors, best practices and detecting behaviors that could be improved.
 
 *Example:*
 
 ![Ansible lint example 1](https://i.imgur.com/qa2VxMJ.png)
 
 A cool thing you can do with **Ansible lint** is specifying a folder and it will test all the **.yml** files in this case (even recursively)!
+
 `ansible-lint ansible/roles/software/nomad`
+
 gives the output for the tasks, handlers templates, ... all the directories inside the **Nomad** role directory.
 
 In this case we left out some best practices to give you a quick look at what Ansible lint could give you as output. It's a very easy and powerful tool you can use to test your Ansible files.
@@ -127,7 +129,17 @@ It's also possible to test just one specific file instead of an entire directory
 ![Ansible lint example 2](https://i.imgur.com/0OsSh7U.png)
 
 Please refer to the following link to use Ansible lint yourself.
+
 [Ansible lint installation](https://ansible-lint.readthedocs.io/en/latest/installing.html)
 
-[Consul configuration](https://learn.hashicorp.com/tutorials/consul/get-started-create-datacenter?in=consul%2Fgetting-started&fbclid=IwAR1lVFYM9e_ELX9v-aOq18Cet9bAxYZuKBYCOkCZHNP3F35l5h-NJgyyIGg)
-[Ansible lint](https://ansible-lint.readthedocs.io/en/latest/index.html)
+## Sources
+
+- [Consul configuration](https://learn.hashicorp.com/tutorials/consul/get-started-create-datacenter?in=consul%2Fgetting-started&fbclid=IwAR1lVFYM9e_ELX9v-aOq18Cet9bAxYZuKBYCOkCZHNP3F35l5h-NJgyyIGg)
+
+- [Nomad documentation](https://www.nomadproject.io/docs)
+
+- [Ansible documentation](https://docs.ansible.com/ansible/latest/index.html)
+
+- [Ansible lint](https://ansible-lint.readthedocs.io/en/latest/index.html)
+
+- [Pluralsight: Ansible fundamentals](https://app.pluralsight.com/library/courses/ansible-fundamentals/table-of-contents)
