@@ -6,6 +6,8 @@
 - Ansible playbook
 - Roles
 
+- EXTRA: Ansible lint
+
 # How was this developed?
 
 ## Vagrantfile
@@ -105,5 +107,27 @@ If you take a look at the [Nomad task](https://github.com/GiulianoArgentinoPXL/P
  ```
  
  By using both groups and conditional statements in our assignment, we learned to work with both which is never a bad case!
+ 
+ ## EXTRA: Ansible lint
 
-https://learn.hashicorp.com/tutorials/consul/get-started-create-datacenter?in=consul%2Fgetting-started&fbclid=IwAR1lVFYM9e_ELX9v-aOq18Cet9bAxYZuKBYCOkCZHNP3F35l5h-NJgyyIGg
+A fun little extra we used for this assignment since Ansible is a very interesting piece of software, we used [Ansible lint](https://ansible-lint.readthedocs.io/en/latest/usage.html) to test our **yaml** files for syntax errors, best practices, detecting behaviors that could be improved.
+
+*Example:*
+
+![Ansible lint example 1](https://i.imgur.com/qa2VxMJ.png)
+
+A cool thing you can do with **Ansible lint** is specifying a folder and it will test all the **.yml** files in this case (even recursively)!
+`ansible-lint ansible/roles/software/nomad`
+gives the output for the tasks, handlers templates, ... all the directories inside the **Nomad** role directory.
+
+In this case we left out some best practices to give you a quick look at what Ansible lint could give you as output. It's a very easy and powerful tool you can use to test your Ansible files.
+
+It's also possible to test just one specific file instead of an entire directory: 
+
+![Ansible lint example 2](https://i.imgur.com/0OsSh7U.png)
+
+Please refer to the following link to use Ansible lint yourself.
+[Ansible lint installation](https://ansible-lint.readthedocs.io/en/latest/installing.html)
+
+[Consul configuration](https://learn.hashicorp.com/tutorials/consul/get-started-create-datacenter?in=consul%2Fgetting-started&fbclid=IwAR1lVFYM9e_ELX9v-aOq18Cet9bAxYZuKBYCOkCZHNP3F35l5h-NJgyyIGg)
+[Ansible lint](https://ansible-lint.readthedocs.io/en/latest/index.html)
