@@ -25,3 +25,7 @@ Once it is finished, you should be able to connect to the vagrant environment th
     $ vagrant ssh
     [vagrant@nomad ~]$
 ```
+# Links
+
+### [Assignment 1: inline and script provisioning](https://github.com/GiulianoArgentinoPXL/PXL_nomad/tree/team19/Nomad)
+### [Assignment 2: Ansible provisioning](https://github.com/GiulianoArgentinoPXL/PXL_nomad/tree/team19/Ansible)
