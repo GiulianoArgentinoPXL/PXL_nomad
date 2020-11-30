@@ -118,7 +118,9 @@ A fun little extra we used for this assignment since Ansible is a very interesti
 
 A cool thing you can do with **Ansible lint** is specifying a folder and it will test all the **.yml** files in this case (even recursively)!
 
-`ansible-lint ansible/roles/software/nomad`
+```bash
+ansible-lint ansible/roles/software/nomad
+```
 
 gives the output for the tasks, handlers templates, ... all the directories inside the **Nomad** role directory.
 
