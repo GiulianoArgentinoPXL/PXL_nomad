@@ -1,40 +1,16 @@
-# Nomad consul
-
-The aim of this project is to provide a development environment based on [consul](https://www.consul.io) and [nomad](https://www.nomadproject.io) to manage container based microservices.
-
-The following steps should make that clear;
-
-bring up the environment by using [vagrant](https://www.vagrantup.com) which will create centos 7 virtualbox machine or lxc container.
-
-The proved working vagrant providers used on an [ArchLinux](https://www.archlinux.org/) system are
-* [vagrant-lxc](https://github.com/fgrehm/vagrant-lxc)
-* [vagrant-libvirt](https://github.com/vagrant-libvirt/)
-* [virtualbox](https://www.virtualbox.org/)
-
-```bash
-    $ vagrant up --provider lxc
-    OR
-    $ vagrant up --provider libvirt
-    OR
-    $ vagrant up --provider virtualbox
-```
-
-Once it is finished, you should be able to connect to the vagrant environment through SSH and interact with Nomad:
-
-```bash
-    $ vagrant ssh
-    [vagrant@nomad ~]$
-```
-
-**To access the Web UI of Consul**
-
-After the vagrant environment is set up successfully, type
-
-```
-    vagrant ssh <nomadserver> -- -L 8500:localhost:8500
-```
+# Table of contents
 
 **How was this developed?**
+
+- [Vagrantfile](https://github.com/GiulianoArgentinoPXL/PXL_nomad/blob/team19/Ansible/README.md#vagrantfile)
+- [Ansible playbook](https://github.com/GiulianoArgentinoPXL/PXL_nomad/blob/team19/Ansible/README.md#ansible-playbook)
+- [Roles](https://github.com/GiulianoArgentinoPXL/PXL_nomad/blob/team19/Ansible/README.md#roles)
+
+- [EXTRA: Ansible lint](https://github.com/GiulianoArgentinoPXL/PXL_nomad/blob/team19/Ansible/README.md#extra-ansible-lint)
+
+# How was this developed?
+
+## Vagrantfile
 
 First of all we define our nodes with both a loop and manually. The server is hardcoded because theres only 1 and it needs a different name compared to the multiple agents.
 You can add as many agents as you want by just increasing the `NODE_COUNT` variable at the top of the **Vagrantfile**.
@@ -60,12 +36,112 @@ config.vm.provision "ansible_local" do |ansible|
      ansible.groups = {
        "servers" => ["server"],
        "clients" => ["agent1","agent2"],
-       "servers:vars" => {"consul_server" => true, "nomad__server" => true}
+       "clients:vars" => {"consul_server" => false, "nomad_server" => false, "nomad_client" => true},
+       "servers:vars" => {"consul_server" => true, "nomad_server" => true, "nomad_client" => false}
      }
+     # use this to get more detailed error information
      ansible.verbose = '-vvv' 
   end
 ```
 
+This was the main info needed for the Vagrantfile, if anything is unclear, the Vagrantfile is documentated more detailed in the [first assignment](https://github.com/GiulianoArgentinoPXL/PXL_nomad/tree/team19/Nomad).
+
+## Ansible playbook
+
+The content for the playbook is really short, we seperate the clients from the servers so we don't need to install unnecessary services. As you can, differentiating both groups isn't completely necessary here, however it's still a good practice for when it actually is necessary. If we put `hosts: all`, **Docker** would also be installed on the server.
+
+```yaml
+- become: true # become root
+  hosts: clients # all the nodes that are in the client group as defined in the Vagrantfile
+  name: "playbook for client vms"
+  roles: 
+    - role: software/docker
+    - role: software/consul
+    - role: software/nomad
 
 
-https://learn.hashicorp.com/tutorials/consul/get-started-create-datacenter?in=consul%2Fgetting-started&fbclid=IwAR1lVFYM9e_ELX9v-aOq18Cet9bAxYZuKBYCOkCZHNP3F35l5h-NJgyyIGg
+
+- become: true # become root
+  hosts: servers # all the nodes that are in the server group as defined in the Vagrantfile
+  name: "playbook for server vms" 
+  roles: 
+    - role: software/consul
+    - role: software/nomad
+```
+
+## Roles
+
+As for the roles, we mixed up using 2 different techniques to learn how both techniques work, now what are we exactly talking about? If you take a look at [consul.hcl.j2](https://github.com/GiulianoArgentinoPXL/PXL_nomad/blob/team19/Ansible/ansible/roles/software/consul/templates/consul.hcl.j2) (this is a template file which will be used for the configuration for **Consul**), we used an if statement to determine if the specified node is a client or server. Whileas in the [Nomad templates](https://github.com/GiulianoArgentinoPXL/PXL_nomad/tree/team19/Ansible/ansible/roles/software/nomad/templates) we have 2 seperate configuration files instead of using an if statement to determine the difference. Now you might might ask, where do you choose which config file you want to use?
+
+If you take a look at the [Nomad task](https://github.com/GiulianoArgentinoPXL/PXL_nomad/blob/team19/Ansible/ansible/roles/software/nomad/tasks/main.yml) you can see a `when: nomad_server` and `when: nomad_client` line. If you paid attention, you can remember this from the **Vagrantfile** which we talked about earlier, where we define the groups.
+
+```yaml
+- name: Create Nomad server configuration file
+  template:
+    src: server.hcl.j2
+    dest: /etc/nomad.d/nomad.hcl
+    owner: "nomad"
+    group: "nomad"
+    mode: 0644
+  notify: restart nomad
+  when: nomad_server
+
+- name: Create Nomad client configuration file
+  template:
+    src: client.hcl.j2
+    dest: /etc/nomad.d/nomad.hcl
+    owner: "nomad"
+    group: "nomad"
+    mode: 0644
+  notify: restart nomad
+  when: nomad_client
+  ```
+  
+  ```
+ ansible.groups = {
+       "servers" => ["server"],
+       "clients" => ["agent1","agent2"],
+       "clients:vars" => {"consul_server" => false, "nomad_server" => false, "nomad_client" => true},
+       "servers:vars" => {"consul_server" => true, "nomad_server" => true, "nomad_client" => false}
+     }
+ ```
+ 
+ By using both groups and conditional statements in our assignment, we learned to work with both which is never a bad case!
+ 
+ ## EXTRA: Ansible lint
+
+A fun little extra we used for this assignment since Ansible is a very interesting piece of software, we used [Ansible lint](https://ansible-lint.readthedocs.io/en/latest/usage.html) to test our **yaml** files for syntax errors, best practices and detecting behaviors that could be improved.
+
+*Example:*
+
+![Ansible lint example 1](https://i.imgur.com/qa2VxMJ.png)
+
+A cool thing you can do with **Ansible lint** is specifying a folder and it will test all the **.yml** files in this case (even recursively)!
+
+```bash
+ansible-lint ansible/roles/software/nomad
+```
+
+gives the output for the tasks, handlers templates, ... all the directories inside the **Nomad** role directory.
+
+In this case we left out some best practices to give you a quick look at what Ansible lint could give you as output. It's a very easy and powerful tool you can use to test your Ansible files.
+
+It's also possible to test just one specific file instead of an entire directory: 
+
+![Ansible lint example 2](https://i.imgur.com/0OsSh7U.png)
+
+Please refer to the following link to use Ansible lint yourself.
+
+[Ansible lint installation](https://ansible-lint.readthedocs.io/en/latest/installing.html)
+
+## Sources
+
+- [Consul configuration](https://learn.hashicorp.com/tutorials/consul/get-started-create-datacenter?in=consul%2Fgetting-started&fbclid=IwAR1lVFYM9e_ELX9v-aOq18Cet9bAxYZuKBYCOkCZHNP3F35l5h-NJgyyIGg)
+
+- [Nomad documentation](https://www.nomadproject.io/docs)
+
+- [Ansible documentation](https://docs.ansible.com/ansible/latest/index.html)
+
+- [Ansible lint](https://ansible-lint.readthedocs.io/en/latest/index.html)
+
+- [Pluralsight: Ansible fundamentals](https://app.pluralsight.com/library/courses/ansible-fundamentals/table-of-contents)
