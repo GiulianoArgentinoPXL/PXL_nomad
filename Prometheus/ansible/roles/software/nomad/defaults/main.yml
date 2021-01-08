@@ -1,0 +1,11 @@
+---
+# File: main.yml - Default variables for Nomad
+
+## Core
+nomad_bootstrap_expect: 1
+nomad_datacenter: "dc1"
+nomad_data_dir: /opt/nomad/data
+nomad_bind_addr: 10.0.0.10
+nomad_client: false
+nomad_server: true
+

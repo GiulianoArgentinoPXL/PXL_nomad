@@ -6,7 +6,7 @@ NODE_COUNT = 2
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = BOX_IMAGE
   config.vm.provision "shell", inline: "hostname"
-  config.vm.provision "shell", path: "scriptsPE/update.sh"
+  #config.vm.provision "shell", path: "scriptsPE/update.sh"
   config.vm.provision "shell", path: "scriptsPE/docker_install.sh"
   config.vm.provision "shell", path: "scriptsPE/nomad_install.sh"
   config.vm.provision "shell", path: "scriptsPE/consul_install.sh"
@@ -32,17 +32,17 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 	nomadserver.vm.provision "file", source: "webserver.hcl", destination: "~/webserver.hcl"
 	end
   
-  (1..NODE_COUNT).each do |i|
-     config.vm.define "agent#{i}" do |subconfig|
-       subconfig.vm.box = BOX_IMAGE
-       subconfig.vm.hostname = "AGENT#{i}"
-       subconfig.vm.network :private_network, ip: "10.0.0.#{i + 10}", virtualbox__intnet: true, auto_config: true
-	   subconfig.vm.provision "shell", inline: <<-SHELL
-		 echo -e 'data_dir = "/opt/consul" \nclient_addr = "0.0.0.0" \nui = true \nbind_addr = "{{ GetInterfaceIP \\"eth1\\" }}" \nretry_join = ["10.0.0.10"]' > /etc/consul.d/consul.hcl
-		 echo -e 'data_dir = "/opt/nomad/data" \nbind_addr = "0.0.0.0" \nclient {\nenabled = true  \nservers = ["10.0.0.10"]\n}' > /etc/nomad.d/nomad.hcl
-		 sudo systemctl restart nomad
-		 sudo systemctl restart consul
-	   SHELL
-	   end
-   end 
+  #(1..NODE_COUNT).each do |i|
+  #   config.vm.define "agent#{i}" do |subconfig|
+   #    subconfig.vm.box = BOX_IMAGE
+    #   subconfig.vm.hostname = "AGENT#{i}"
+     #  subconfig.vm.network :private_network, ip: "10.0.0.#{i + 10}", virtualbox__intnet: true, auto_config: true
+	  # subconfig.vm.provision "shell", inline: <<-SHELL
+		# echo -e 'data_dir = "/opt/consul" \nclient_addr = "0.0.0.0" \nui = true \nbind_addr = "{{ GetInterfaceIP \\"eth1\\" }}" \nretry_join = ["10.0.0.10"]' > /etc/consul.d/consul.hcl
+		 #echo -e 'data_dir = "/opt/nomad/data" \nbind_addr = "0.0.0.0" \nclient {\nenabled = true  \nservers = ["10.0.0.10"]\n}' > /etc/nomad.d/nomad.hcl
+	#	 sudo systemctl restart nomad
+	#	 sudo systemctl restart consul
+	 #  SHELL
+	 #  end
+ #  end 
 end

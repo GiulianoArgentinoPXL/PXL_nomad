@@ -1,0 +1,20 @@
+#!/bin/bash
+# {{ ansible_managed }}
+# {{ ansible_default_ipv4.address }}
+# {{ ansible_eth1.ipv4.address }}
+
+
+datacenter = "{{consul_datacenter}}"
+data_dir = "{{ consul_data_dir }}"
+client_addr = "0.0.0.0"
+ui = true
+
+bind_addr = "{{ ansible_eth1.ipv4.address }}" 
+
+{% if consul_server == "true" %}
+bootstrap_expect = 1
+server = true
+
+{%else %}
+retry_join = ["{{ consul_server_addr }}"]
+{% endif %}

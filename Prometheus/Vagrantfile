@@ -1,0 +1,43 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+VAGRANTFILE_API_VERSION = "2"
+BOX_IMAGE = "centos/7"
+NODE_COUNT = 2
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
+  config.vm.box = BOX_IMAGE
+  config.vm.provider :virtualbox do |virtualbox, override|
+    virtualbox.customize ["modifyvm", :id, "--memory", 2048]
+  end
+  
+  config.vm.provider :lxc do |lxc, override|
+    override.vm.box = "visibilityspots/centos-7.x-minimal"
+  end
+
+  config.vm.define "server" do |server|
+    server.vm.hostname = "server"
+    server.vm.network :private_network, ip: "10.0.0.10", virtualbox__intnet: true
+	
+	server.vm.network "forwarded_port", guest_ip: "10.0.0.10", guest: 4646, host: 4646, auto_correct: true, host_ip: "127.0.0.1"
+    server.vm.network "forwarded_port", guest: 8500, host: 8500, auto_correct: true, host_ip: "127.0.0.1"
+  end
+  
+  (1..NODE_COUNT).each do |i|
+     config.vm.define "agent#{i}" do |agent|
+       agent.vm.hostname = "agent#{i}"
+       agent.vm.network :private_network, ip: "10.0.0.#{i + 10}", virtualbox__intnet: true
+     end
+  end
+  config.vm.provision "ansible_local" do |ansible|
+     ansible.config_file = "ansible/ansible.cfg"
+     ansible.playbook = "ansible/plays/playbook.yml"
+     ansible.groups = {
+       "servers" => ["server"],
+       "clients" => ["agent1","agent2"],
+       "clients:vars" => {"consul_server" => false, "nomad_server" => false, "nomad_client" => true},
+       "servers:vars" => {"consul_server" => true, "nomad_server" => true, "nomad_client" => false}
+     }
+     ansible.verbose = '-vvv' 
+  end
+end

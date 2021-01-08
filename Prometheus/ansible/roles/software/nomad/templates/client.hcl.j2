@@ -1,0 +1,15 @@
+#!/bin/bash
+# {{ ansible_managed }}
+# {{ ansible_default_ipv4.address }}
+# {{ ansible_eth1.ipv4.address }}
+log_level = "DEBUG"
+datacenter = "{{ nomad_datacenter }}"
+data_dir = "{{ nomad_data_dir }}"
+
+client {
+	enabled = true
+}
+advertise {
+	http = "{{ ansible_eth1.ipv4.address }}:4646"
+}
+

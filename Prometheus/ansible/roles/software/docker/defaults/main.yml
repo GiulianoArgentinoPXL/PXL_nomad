@@ -1,0 +1,22 @@
+---
+
+# docker_edition kan oftewel 'ce' (community edition of 'ee' (enterprise edition) zijn
+docker_edition: 'ce'
+# gebruikt de var hierboven om de juiste package-naam vast te krijgen
+docker_package: "docker-{{ docker_edition }}"
+# controleert of de package installed is, uninstalled is of de latest version is met 'present', 'absent' of 'latest';
+docker_package_state: present
+
+# docker op startup aanzetten of niet
+docker_service_state: started
+docker_service_enabled: true
+docker_restart_handler_state: restarted
+
+# Voor Debian-based systems
+docker_apt_repository: "deb [arch={{ docker_apt_arch }}] https://download.docker.com/linux/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} {{ docker_apt_release_channel }}"
+docker_apt_gpg_key: https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg
+docker_apt_ignore_key_error: true
+
+# Voor Redhat/CentOS/Fedora
+docker_yum_repo_url: https://download.docker.com/linux/{{ (ansible_distribution == "Fedora") | ternary("fedora","centos") }}/docker-{{ docker_edition }}.repo
+docker_yum_gpg_key: https://download.docker.com/linux/centos/gpg
