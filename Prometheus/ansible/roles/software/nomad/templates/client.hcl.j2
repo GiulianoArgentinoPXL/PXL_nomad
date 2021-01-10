@@ -7,9 +7,16 @@ datacenter = "{{ nomad_datacenter }}"
 data_dir = "{{ nomad_data_dir }}"
 
 client {
-	enabled = true
+	enabled = true,
+	servers = [ "10.0.0.10" ],
+    	network_interface = "eth1",
 }
 advertise {
 	http = "{{ ansible_eth1.ipv4.address }}:4646"
 }
-
+telemetry {
+ collection_interval = "5s",
+ publish_allocation_metrics = true,
+ publish_node_metrics = true,
+ prometheus_metrics = true
+}
