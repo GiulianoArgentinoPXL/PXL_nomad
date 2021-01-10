@@ -19,7 +19,8 @@ job "prometheus" {
       	    size = 300
     	}
 
-	template {
+    	task "prometheus" {
+	    template {
             change_mode = "noop"
             destination = "local/rules.yml"
             data = <<EOH
@@ -35,14 +36,11 @@ groups:
     annotations:
       description: "Our webserver is down."
 EOH 
-      }
-
-    task "prometheus" {
-      template {
-        change_mode = "noop"
-        destination = "local/prometheus.yml"
-
-        data = <<EOH
+      	    }
+      	    template {
+                change_mode = "noop"
+        	destination = "local/prometheus.yml"
+        	data = <<EOH
 ---
 global:
   scrape_interval:     5s
@@ -84,9 +82,8 @@ scrape_configs:
     metrics_path: /metrics
 
 EOH
-      }
+      	    }
       driver = "docker"
-
       config {
         image = "prom/prometheus:latest"
         force_pull = true
@@ -106,7 +103,7 @@ EOH
 
       service {
         name = "prometheus"
-        tags = ["urlprefix-/"]
+        tags = ["prometheus-/"]
         port = "prometheus_ui"
 
         check {
