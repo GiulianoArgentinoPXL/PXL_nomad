@@ -29,15 +29,21 @@ telemetry {
 
 The Prometheus UI will be accessible on port 9090. Here you can check all the available metrics.
 
+![prometheus alert](https://i.imgur.com/tO1yyia.png)
+
 ## Alertmanager
 
 Alertmanager will receive metrics from Prometheus so that when a certain metric has a specific value, it will trigger an alert if you configure it this way. It has support for a wide variety of client applications; for example the Prometheus server.
+
+![alertmanager](https://i.imgur.com/QSUGIZK.png)
 
 ## Grafana
 
 The default login of this web interface is admin/admin.
 Grafana will be used to set up dashboards, to make it easy and make it have a clean interface, we made use of an existing [template](https://github.com/GiulianoArgentinoPXL/PXL_nomad/blob/team19/Prometheus/Grafana-dashboard-prometheus-node-exporter.json). 
 The widgets are very customizable so when you don't like a specific widget, you can either edit or remove it to your personal preference. 
+
+![grafana](https://i.imgur.com/LDXyoUk.png)
 
 [Link to all kinds of different dashboards](https://grafana.com/grafana/dashboards)
 
