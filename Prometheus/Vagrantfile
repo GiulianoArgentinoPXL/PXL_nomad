@@ -8,7 +8,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.box = BOX_IMAGE
   config.vm.provider :virtualbox do |virtualbox, override|
-    virtualbox.customize ["modifyvm", :id, "--memory", 2048]
+    virtualbox.customize ["modifyvm", :id, "--memory", 1024]
   end
   
   config.vm.provider :lxc do |lxc, override|
@@ -17,16 +17,15 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define "server" do |server|
     server.vm.hostname = "server"
-    server.vm.network :private_network, ip: "10.0.0.10", virtualbox__intnet: true
-	
-	server.vm.network "forwarded_port", guest_ip: "10.0.0.10", guest: 4646, host: 4646, auto_correct: true, host_ip: "127.0.0.1"
-    server.vm.network "forwarded_port", guest: 8500, host: 8500, auto_correct: true, host_ip: "127.0.0.1"
+    server.vm.network :private_network, ip: "10.0.0.10"
+    server.vm.network "forwarded_port", guest_ip: "10.0.0.10", guest: 4646, host: 4646, host_ip: "127.0.0.1"
+    server.vm.network "forwarded_port", guest: 8500, host: 8500, host_ip: "127.0.0.1"
   end
   
   (1..NODE_COUNT).each do |i|
      config.vm.define "agent#{i}" do |agent|
        agent.vm.hostname = "agent#{i}"
-       agent.vm.network :private_network, ip: "10.0.0.#{i + 10}", virtualbox__intnet: true
+       agent.vm.network :private_network, ip: "10.0.0.#{i + 10}"
      end
   end
   config.vm.provision "ansible_local" do |ansible|
